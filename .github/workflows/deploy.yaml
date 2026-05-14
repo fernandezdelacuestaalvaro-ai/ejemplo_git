@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -26,10 +25,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Cache node_modules
+      - name: Cache node modules
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: |
+            node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -44,14 +44,13 @@ jobs:
           node script/validate-docs.js
 
   build:
-    runs-on: ubuntu-latest
     needs: test
+    runs-on: ubuntu-latest
 
-    env:
-      SITE_ENV: production
+    outputs:
+      site_url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -60,10 +59,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Cache node_modules
+      - name: Cache node modules
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: |
+            node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -71,27 +71,30 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build project
+      - name: Build static site
         run: npm run eleventy:prod
 
-      - name: Setup Pages
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
 
+      - name: Save deployment URL
+        id: deployment
+        run: echo "page_url=https://${{ github.repository_owner }}.github.io/ejemplo_git/" >> $GITHUB_OUTPUT
+
   deploy:
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ needs.build.outputs.site_url }}
 
     steps:
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
@@ -99,7 +102,15 @@ jobs:
       - name: Create summary issue
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           gh issue create \
+            --repo "$GH_REPO" \
             --title "Deployment Summary" \
-            --body "GitHub Pages deployment completed successfully."
+            --body "GitHub Pages deployment completed successfully.
+
+            Site URL: ${{ needs.build.outputs.site_url }}
+
+            Repository: https://github.com/${{ github.repository }}
+
+            Commit: ${{ github.sha }}"
