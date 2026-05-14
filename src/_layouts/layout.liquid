@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="/ejemplo_git/css/style.css">
+    <link rel="stylesheet" href="{{ '/css/style.css' | url }}">
 </head>
 <body>
 
 <header>
     <h1>Knowledge Base</h1>
+    <p>Central knowledge base for CorpX documentation</p>
 </header>
 
 <nav>
-    <a href="/ejemplo_git/">Home</a>
-    <a href="/ejemplo_git/onboarding/">Onboarding</a>
-    <a href="/ejemplo_git/troubleshooting/">Troubleshooting</a>
-    <a href="/ejemplo_git/architecture/">Architecture</a>
+    <a href="{{ '/' | url }}">Home</a>
+    <a href="{{ '/onboarding/' | url }}">Onboarding</a>
+    <a href="{{ '/troubleshooting/' | url }}">Troubleshooting</a>
+    <a href="{{ '/architecture/' | url }}">Architecture</a>
 </nav>
 
 <main>
-    <div class="card">
+    <section class="hero">
         {{ content }}
-    </div>
+    </section>
 </main>
 
 </body>
