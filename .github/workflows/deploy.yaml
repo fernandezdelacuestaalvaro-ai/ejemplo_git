@@ -16,6 +16,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: test
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,11 +28,10 @@ jobs:
         with:
           node-version: 20
 
-      - name: Cache node modules
+      - name: Cache npm dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
+          path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -47,8 +49,11 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: production
+
     outputs:
-      site_url: ${{ steps.deployment.outputs.page_url }}
+      site_url: ${{ steps.set-url.outputs.page_url }}
 
     steps:
       - name: Checkout repository
@@ -59,11 +64,10 @@ jobs:
         with:
           node-version: 20
 
-      - name: Cache node modules
+      - name: Cache npm dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
+          path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -82,9 +86,10 @@ jobs:
         with:
           path: ./_site
 
-      - name: Save deployment URL
-        id: deployment
-        run: echo "page_url=https://${{ github.repository_owner }}.github.io/ejemplo_git/" >> $GITHUB_OUTPUT
+      - name: Set deployment URL
+        id: set-url
+        run: |
+          echo "page_url=https://${{ github.repository_owner }}.github.io/ejemplo_git/" >> $GITHUB_OUTPUT
 
   deploy:
     needs: build
@@ -109,8 +114,11 @@ jobs:
             --title "Deployment Summary" \
             --body "GitHub Pages deployment completed successfully.
 
-            Site URL: ${{ needs.build.outputs.site_url }}
+            Site URL:
+            ${{ needs.build.outputs.site_url }}
 
-            Repository: https://github.com/${{ github.repository }}
+            Repository:
+            https://github.com/${{ github.repository }}
 
-            Commit: ${{ github.sha }}"
+            Commit:
+            ${{ github.sha }}"
