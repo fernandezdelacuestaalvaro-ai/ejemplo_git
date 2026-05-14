@@ -153,3 +153,19 @@ The website is deployed automatically using:
 # License
 
 MIT License
+
+---
+
+# Repository URL
+
+```text
+https://github.com/fernandezdelacuestaalvaro-ai/ejemplo_git
+```
+
+---
+
+# GitHub Pages URL
+
+```text
+https://fernandezdelacuestaalvaro-ai.github.io/ejemplo_git/
+```
