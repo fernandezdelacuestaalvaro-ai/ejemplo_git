@@ -20,8 +20,13 @@ concurrency:
   group: deployment
   cancel-in-progress: true
 
-jobs:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  issues: write
 
+jobs:
   test:
     runs-on: ubuntu-latest
 
@@ -87,11 +92,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
-    permissions:
-      pages: write
-      id-token: write
-      issues: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -100,11 +100,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Create deployment summary issue
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh issue create \
-            --title "Deployment completed" \
-            --body "GitHub Pages deployment successful"
