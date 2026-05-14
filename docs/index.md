@@ -1,6 +1,11 @@
-# Knowledge Base Project
+---
+layout: layout.liquid
+title: Knowledge Base
+---
 
-Welcome to the knowledge base documentation site.
+# Central Knowledge Base
+
+Welcome to the internal documentation portal.
 
 ## Sections
 
@@ -8,11 +13,12 @@ Welcome to the knowledge base documentation site.
 - Troubleshooting
 - Architecture
 
-## Purpose
+## Overview
 
 This project demonstrates:
 
 - GitHub Actions
+- CI/CD pipelines
 - GitHub Pages deployment
+- Automated validation
 - Eleventy static site generation
-- Automated validation scripts
