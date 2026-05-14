@@ -1,3 +1,8 @@
+---
+layout: layout.liquid
+title: Onboarding
+---
+
 # Architecture
 
 ## Project Structure
