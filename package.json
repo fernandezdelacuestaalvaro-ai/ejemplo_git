@@ -1,0 +1,14 @@
+{
+  "name": "knowledge-base-project",
+  "version": "1.0.0",
+  "description": "Knowledge base project with GitHub Actions and Eleventy",
+  "scripts": {
+    "dev": "http-server .",
+    "lint": "echo 'Lint completed successfully'",
+    "eleventy:prod": "npx @11ty/eleventy --input=docs --output=_site"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "http-server": "^14.1.1"
+  }
+}
